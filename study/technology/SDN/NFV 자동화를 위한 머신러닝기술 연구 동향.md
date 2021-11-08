@@ -32,3 +32,20 @@ NFV는 전통적 네트워크와 달리 하드웨어의 구입 없이 사용자�
 8. 심층학습 : 인간의 두뇌를 모방하여 만든 인공신경망을 기반으로 다량의 데이터 속에서 특징을 추출하는 머신러닝 기법. 인공신경망은 입력계층과 출력계층을 그 사이의 은닉계층이 연결하는 형태를 이루는데, 여러 개의 은닉계층을 두어 결과를 도출하는 것이 심층학습. 지도,비지도 학습에 모두 이용될 수 있으며, 대표적으로 DBN(Deep Belied Network), CNN(Convolutional Neural Network), LSTM(Long Short-Term Memory)
 
 ## SDN/NFV 기반 네트워크 환경에서는 패킷을 일정 기준으로 나누는 것이 학습의 목적이 되는 경우가 많기 떄문에 네트워크는 분류 또는 군집화 알고리즘이 많이 사용된다. 네트워크에서 얻을 수 있는 데이터의 특성에 따라 지도학습이 가능한 경우에는 분류 알고리즘이, 지도학습이 불가능한 경우에는 군집화 알고리즘이 사용된다. 하지만 네트워크 관리 및 오케스트레이션은 목적이 다양하여 자원 할당과 같이 연속적인 값을 추론해야 하는 목적도 존재하기 때문에 회기 분석 알고리즘 역시 네트워크에 적용될 수 있다.
+
+9. Flow : 패킷을 처리해주는 규칙의 단위.
+   ex) 하나의 SDN Switch에서 Mac이 A인 패킷을 5번 포트로 보내고 싶다면 하나의 Flow가 생성된다. 다음으로 Mac이 B인 패킷을 6번 포트로 보내고 싶다면 또 하나의 Flow가 생성된다. 이렇게 생성된 Flow들은 스위치의 Flow Table에 저장된다. Flow는 Matching Field와 Action을 지정하여 생성하게 된다.
+   ![Flow_Table](../images/Flow_Table.PNG)
+   Matching Field에 들어 갈 수 있는 내용은 다음과 같다.
+   ![Matching_Field](../images/Matching_Field.PNG)
+
+   Action에 들어갈 수 있는 내용은 Drop 또는 특정 포트로 포워딩, 다른 테이블로 전달 등이 있다. 위의 Flow Table 그림을 Matching Field와 Action으로 쓴다면 아래와 같다.
+   ![Field&Action](../images/Field&Action.PNG)
+
+10. SDN Switch : SDN Switch는 하드웨어/소프트웨어 Switch로 볼 수 있다.
+    하드웨어 스위치는 EdgecorE, Quanta 등 여러 벤더에서 생산하고 소프트웨어 스위치는 대표적으로 OpenVSwitch가 있다. 하드웨어 스위치는 보통 TCAM이라는 메모리에 Flow Table을 저장하고 소프트웨어 스위치는 RAM에 저장한다. 스위치의 메모리가 한정적이기 때문에 Flow Table 관리를 하는 방법에 많은 연구가 필요.
+    또한 스위치에 패킷이 도착하였을 때 Matching되는 Flow를 찾는 방법에도 여러가지가 존재.
+    TCAM 같은 경우에는 one cycle로 한번에 Matching되는 Flow를 찾고 OpenCSwitch Tuple Space Search를 사용한다. Openflow Switch는 Hash기반/Wildcard 기반으로 Flow Table을 구성하는데 Hash기반은 패킷의 정보를 해시 함수에 넣어 해시값을 생성하고 해시값을 Key값으로 Flow를 저장.
+    Wildcard 기반은 Wildcard를 사용하여 Flow를 저장한다.
+
+11. Overlay network : 물리 네트워크 위에 성립되는 가상의 컴퓨터 네트워크. 오버레이 네트워크 안의 노드는 가상, 논리 링크로 연결될 수 있으며, 각 링크는 네트워크 안에서 많은 물리적 링크를 통하지만 물리적 링크를 고려하지 않는다. 예를 들면, P2P 네트워크는 오버레이 네트워크라고 할 수 있다. 이는 물리적으로 전달망을 고려하지 않고 peer 와 peer 간의 연결만을 고려하기 때문이다. 전화 접속 인터넷은 전화망 위의 오버레이이다.
